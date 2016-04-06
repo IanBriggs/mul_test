@@ -1,12 +1,15 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include "float_utils.h"
 #include "input_gen.h"
 #include "vector_creation.h"
 
 int
-main()
+main(int argc, char **argv)
 {
+  assert(argc == 2);
+  size_t errors = atoi(argv[1]); // BAD PRACTICE
   size_t L = 3;
   size_t H = 3;
   size_t width = L*H*50;
@@ -28,7 +31,7 @@ main()
   print_hex_vectors(clean_vecs->mullo);
 
 
-  flt_mat *dirty = corrupt_flt_mat(clean, 1, L*H, 31, 0);
+  flt_mat *dirty = corrupt_flt_mat(clean, errors, L*H, 31, 0);
   vectors *dirty_vecs = create_vectors(dirty, m, H, L);
   printf("\n\n\n\nDIRTY:\n");
   printf("AVERAGE:\n");
