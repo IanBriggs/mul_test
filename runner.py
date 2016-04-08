@@ -16,6 +16,7 @@ import os.path as path
 from pprint import pprint
 
 output_lock = MP.Lock()
+output_file = None
 csv_file = "differential_run.csv"
 
 
@@ -34,7 +35,7 @@ def yellow(text):
 
 
 def parse_args():
-    global base_include
+    global output_file
     desc = "Schedule long running jobs in a batch-style fashion"
     epi =  "Commands are run in subdiretories of the output directory"         \
            ".stout and stderr of the command are put "                         \
@@ -48,8 +49,11 @@ def parse_args():
                         "default is \"gen\"")
     parser.add_argument("--training-sets", nargs=3, required=True)
     parser.add_argument("--testing-sets", nargs=3, required=True) # testing sets must be aligned (line 1 from all files should be from the same place of the same experiment run)
+    parser.add_argument("--datafile", required=True)
 
     args = parser.parse_args()
+    
+    output_file = path.abspath(args.datafile)
 
     args.training_sets[0] = path.abspath(args.training_sets[0])
     args.training_sets[1] = path.abspath(args.training_sets[1])
@@ -183,7 +187,7 @@ def run_command(dirnum_lock, dirnum, work_queue, output_dir):
         dirnum.value += 1
         dirnum_lock.release()
         print("Done with {}".format(this_iter))
-        with open(os.path.join(output_dir, csv_file), 'a') as f:
+        with open(output_file), 'a') as f:
             f.write(csv_entry)
         output_lock.release()
             
@@ -233,7 +237,7 @@ def main():
     process_list = [MP.Process(target=process_worker, args=arguments)
                     for i in range(args.p)]
     
-    with open(os.path.join(args.o, csv_file), 'w') as f:
+    with open(output_file, 'w') as f:
             f.write("s, t, gamma, coeff0, norm, high, low, combined\n")
 
     # start running
