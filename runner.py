@@ -15,8 +15,6 @@ import os.path as path
 
 from pprint import pprint
 
-from test_config import *
-
 output_lock = MP.Lock()
 csv_file = "differential_run.csv"
 
@@ -73,17 +71,8 @@ def parse_args():
     return args
 
 
-def expand_path(text):
-    if (os.path.isfile(text) or os.path.isdir(text)):
-        return os.path.abspath(text)
-    return text
 
-def command_expand(command_list):
-    command_list = list(map(expand_path, command_list))
-    return command_list
-
-
-def generate_work_queue(command_file):
+def generate_work_queue():
     # queue them up
     work_queue = MP.Queue()
     for s in range(3):
@@ -108,8 +97,7 @@ def mkdir(new_dir):
 
 def run(cmd, args):
     command = cmd+" "+" ".join(args)
-    print(command, "\n")
-    with subprocess.Popen(command, shell=True) as proc:
+    with SP.Popen(command, shell=True, stdout=SP.DEVNULL) as proc:
         proc.wait()
         
 
@@ -175,7 +163,7 @@ def run_command(dirnum_lock, dirnum, work_queue, output_dir):
         os.chdir(new_subdir)
 
         # run
-        cmd_args = "-s {}#-t 1#-c 10000#-d {}#-g {}#-r {}".split('#')
+        cmd_args = "-s {}#-t 1#-c 10000#-d {}#-g {}#-r {}".format(s, d, g, r).split('#')
         norm_predictions = run_single_detector(TRAINING_SETS[0], cmd_args, TESTING_SETS[0])
         high_predictions = run_single_detector(TRAINING_SETS[1], cmd_args, TESTING_SETS[1])
         low_predictions = run_single_detector(TRAINING_SETS[2], cmd_args, TESTING_SETS[2])
@@ -191,8 +179,8 @@ def run_command(dirnum_lock, dirnum, work_queue, output_dir):
 
         output_lock.acquire()
         dirnum_lock.acquire()
-        this_iter = dirnum.Value()
-        dirnum.Value() += 1
+        this_iter = dirnum.value
+        dirnum.value += 1
         dirnum_lock.release()
         print("Done with {}".format(this_iter))
         with open(os.path.join(output_dir, csv_file), 'a') as f:
@@ -204,7 +192,7 @@ def process_worker(dirnum_lock, dirnum,
                    work_queue, output_dir):
     while(not work_queue.empty()):
         # run the command
-        run_command(dirnum_lock, dirnum, work_queue, child_conn, output_dir)
+        run_command(dirnum_lock, dirnum, work_queue, output_dir)
 
 
 
@@ -245,7 +233,7 @@ def main():
     process_list = [MP.Process(target=process_worker, args=arguments)
                     for i in range(args.p)]
     
-    with open(os.path.join(output_dir, csv_file), 'w') as f:
+    with open(os.path.join(args.o, csv_file), 'w') as f:
             f.write("s, t, gamma, coeff0, norm, high, low, combined\n")
 
     # start running
