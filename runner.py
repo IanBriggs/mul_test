@@ -187,7 +187,7 @@ def run_command(dirnum_lock, dirnum, work_queue, output_dir):
         dirnum.value += 1
         dirnum_lock.release()
         print("Done with {}".format(this_iter))
-        with open(output_file), 'a') as f:
+        with open(output_file, 'a') as f:
             f.write(csv_entry)
         output_lock.release()
             
