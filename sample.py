@@ -33,13 +33,13 @@ def sample(filename, template):
         lines = f.readlines()
 
     clean = [line for line in lines if line.split()[0] == "1"]
-    print(len(clean))
+    print("clean vectors: {}".format(len(clean)))
     clean = [c for c,t in zip(clean, template) if t==True]
-    print(len(clean))
+    print("clean samples: {}".format(len(clean)))
     dirty = [line for line in lines if line.split()[0] == "-1"]
-    print(len(dirty))
+    print("dirty vectors: {}".format(len(dirty)))
     dirty = [d for d,t in zip(dirty, template) if t == True]
-    print(len(dirty))
+    print("dirty samples: {}".format(len(dirty)))
     reduced = clean + dirty
 
     return reduced
@@ -69,7 +69,7 @@ def main():
     high = sample(highfile, template)
     print("\nlow")
     low = sample(lowfile, template)
-
+    print("\n")
     write_samples(norm, normfile+".samples")
     write_samples(high, highfile+".samples")
     write_samples(low, lowfile+".samples")
