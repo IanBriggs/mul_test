@@ -8,10 +8,10 @@
 int
 main(int argc, char **argv)
 {
-  assert(argc == 2);
+  assert(argc == 3);
   size_t errors = atoi(argv[1]); // BAD PRACTICE
   size_t L = 3;
-  size_t H = 3;
+  size_t H = atoi(argv[2]);
   size_t width = L*H*50;
   hex m = 214013;
   flt four_pi = 12.566370614359172;
