@@ -191,53 +191,54 @@ create_hex_vectors(const hex_mat *const in, const size_t H, const size_t L)
 
 void
 mul_hi_lo_mat(const flt_mat *const in, const hex m,
-	      hex_mat **const mulhi_out, hex_mat **const mullo_out)
+	      flt_mat **const mulhi_out, flt_mat **const mullo_out)
 {
-  hex_mat *mulhi = malloc_hex_mat(in->width, in->height);
+  flt_mat *mulhi = malloc_flt_mat(in->width, in->height);
   assert(mulhi != NULL);
   *mulhi_out = mulhi;
 
-  hex_mat *mullo = malloc_hex_mat(in->width, in->height);
+  flt_mat *mullo = malloc_flt_mat(in->width, in->height);
   assert(mullo != NULL);
   *mullo_out = mullo;
 
   for (size_t x_index=0; x_index<in->width; x_index++) {
     for (size_t y_index=0; y_index<in->height; y_index++) {
       const mul_unit both = mul_hi_lo(in->matrix[x_index][y_index], m);
-      mulhi->matrix[x_index][y_index] = both.hi;
-      mullo->matrix[x_index][y_index] = both.lo;
+      mulhi->matrix[x_index][y_index] = (flt) both.hi;
+      mullo->matrix[x_index][y_index] = (flt) both.lo;
     }
   }
 }
 
 
 void
-print_flt_vectors(const flt_mat *const in)
+print_flt_vectors(const flt_mat *const in, char * label)
 {
-  fprint_flt_vectors(stdout, in);
+  fprint_flt_vectors(stdout, in, label);
 }
 
 void
-save_flt_vectors(char * filename, const flt_mat *const in)
+save_flt_vectors(char * filename, const flt_mat *const in, char * label)
 {
   FILE * fp = fopen(filename, "w");
   assert(fp != NULL);
-  fprint_flt_vectors(fp, in);
+  fprint_flt_vectors(fp, in, label);
 }
 
 
 
 void
-fprint_flt_vectors(FILE * stream, const flt_mat *const in)
+fprint_flt_vectors(FILE * stream, const flt_mat *const in, char * label)
 {
   flt_mat_ok(in);
 
   for (size_t x_index=0; x_index<in->width; x_index++) {
     size_t y_index;
+    fprintf(stream, "%s ", label);
     for (y_index=0; y_index<in->height-1; y_index++) {  
-      fprintf(stream, "%f ", in->matrix[x_index][y_index]);
+      fprintf(stream, "%lu:%a ", y_index+1, in->matrix[x_index][y_index]);
     }
-    fprintf(stream, "%f\n", in->matrix[x_index][y_index]);
+    fprintf(stream, "%a\n", in->matrix[x_index][y_index]);
   }
 }
 
@@ -281,14 +282,14 @@ create_vectors(const flt_mat *const in, const hex m, const size_t H, const size_
   vectors *const retval = malloc(sizeof(vectors));
   assert(retval != NULL);
 
-  hex_mat *mulhi_mat;
-  hex_mat *mullo_mat;
+  flt_mat *mulhi_mat;
+  flt_mat *mullo_mat;
 
   mul_hi_lo_mat(in, m, &mulhi_mat, &mullo_mat);
   
   retval->average = create_flt_vectors(in, H, L);
-  retval->mulhi = create_hex_vectors(mulhi_mat, H, L);
-  retval->mullo = create_hex_vectors(mullo_mat, H, L);
+  retval->mulhi = create_flt_vectors(mulhi_mat, H, L);
+  retval->mullo = create_flt_vectors(mullo_mat, H, L);
 
   return retval;
 }

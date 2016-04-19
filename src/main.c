@@ -9,12 +9,32 @@
 flt k;
 flt pi;
 
+void
+process_flow(flt_mat *in, hex m, size_t H, size_t L, char * prefix, char * label)
+{
+  char buf[1024];
+  sprintf(buf, "%s_matrix.txt", prefix);
+  save_flt_mat(buf, in);
+
+  vectors * vecs = create_vectors(in, m, H, L);
+
+  sprintf(buf, "%s_average.vec", prefix);
+  save_flt_vectors(buf, vecs->average, label);
+
+  sprintf(buf, "%s_mulhi.vec", prefix);
+  save_flt_vectors(buf, vecs->mulhi, label);
+
+  sprintf(buf, "%s_mullo.vec", prefix);
+  save_flt_vectors(buf, vecs->mullo, label);
+}
+
+
 int
 main(int argc, char **argv)
 {
   assert(argc == 5);
-  size_t L = atoi(argv[1]);		// BAD PRACTICE
-  size_t H = atoi(argv[2]);		// BAD PRACTICE
+  size_t H = atoi(argv[1]);		// BAD PRACTICE
+  size_t L = atoi(argv[2]);		// BAD PRACTICE
   size_t errors = atoi(argv[3]);	// BAD PRACTICE
   k = strtod(argv[4], NULL);	        // BAD PRACTICE
 
@@ -25,23 +45,16 @@ main(int argc, char **argv)
   srandom(time(NULL));
 
   flt_mat *clean = gen_square_sine_2d(width, 0, 1);
-  save_flt_mat("clean_matrix.txt", clean);
-  vectors *clean_vecs = create_vectors(clean, m, H, L);
+  process_flow(clean, m, H, L, "clean", "1");
 
-  save_flt_vectors("clean_average.vec", clean_vecs->average);
-  save_hex_vectors("clean_mulhi.vec", clean_vecs->mulhi);
-  save_hex_vectors("clean_mullo.vec", clean_vecs->mullo);
+  flt_mat *expo = corrupt_flt_mat(clean, errors, L*H, 30, 23);
+  process_flow(expo, m, H, L, "exponent_corruption", "-1");
 
+  flt_mat *umant = corrupt_flt_mat(clean, errors, L*H, 22, 12);
+  process_flow(umant, m, H, L, "upper_mantissa_corruption", "-1");
 
-
-  flt_mat *dirty = corrupt_flt_mat(clean, errors, L*H, 31, 0);
-  save_flt_mat("dirty_matrix.txt", dirty);
-
-  vectors *dirty_vecs = create_vectors(dirty, m, H, L);
-  save_flt_vectors("dirty_average.vec", dirty_vecs->average);
-  save_hex_vectors("dirty_mullhi.vec", dirty_vecs->mulhi);
-  save_hex_vectors("dirty_mullo.vec", dirty_vecs->mullo);
-  
+  flt_mat *lmant = corrupt_flt_mat(clean, errors, L*H, 11, 0);
+  process_flow(lmant, m, H, L, "lower_mantissa_corruption", "-1");
 
   return 0;
 }
