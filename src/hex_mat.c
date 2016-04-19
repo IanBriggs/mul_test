@@ -83,7 +83,7 @@ print_hex_mat(const hex_mat *const in)
 void
 save_hex_mat(char * filename, const hex_mat *const in)
 {
-  FILE * fp = fopen(filename, 'w');
+  FILE * fp = fopen(filename, "w");
   assert(fp != NULL);
   fprint_hex_mat(fp, in);
 }
