@@ -3,6 +3,7 @@
 
 #include "flt_mat.h"
 
+
 void
 flt_mat_ok(const flt_mat *const in)
 {
@@ -75,15 +76,31 @@ copy_flt_mat(const flt_mat *const in)
 void
 print_flt_mat(const flt_mat *const in)
 {
+  fprint_flt_mat(stdout, in);
+}
+
+
+void
+save_flt_mat(char * filename, const flt_mat *const in)
+{
+  FILE * fp = fopen(filename, "w");
+  assert(fp != NULL);
+  fprint_flt_mat(fp, in);
+}
+
+
+void
+fprint_flt_mat(FILE* stream, const flt_mat *const in)
+{
   flt_mat_ok(in);
 
-  printf("%lu\n%lu\n", in->width, in->height);
+  //fprintf(stream, "%lu\n%lu\n", in->width, in->height);
 
   for (size_t y_index=0; y_index<in->height; y_index++) {  
     size_t x_index;
     for (x_index=0; x_index<in->width-1; x_index++) {
-      printf("%f ", in->matrix[x_index][y_index]);
+      fprintf(stream, "%f ", in->matrix[x_index][y_index]);
     }
-    printf("%f\n", in->matrix[x_index][y_index]);
+    fprintf(stream, "%f\n", in->matrix[x_index][y_index]);
   }
 }

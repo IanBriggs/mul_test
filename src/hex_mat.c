@@ -3,6 +3,7 @@
 
 #include "hex_mat.h"
 
+
 void
 hex_mat_ok(const hex_mat *const in)
 {
@@ -75,15 +76,31 @@ copy_hex_mat(const hex_mat *const in)
 void
 print_hex_mat(const hex_mat *const in)
 {
+  fprint_hex_mat(stdout, in);
+}
+
+
+void
+save_hex_mat(char * filename, const hex_mat *const in)
+{
+  FILE * fp = fopen(filename, 'w');
+  assert(fp != NULL);
+  fprint_hex_mat(fp, in);
+}
+
+
+void
+fprint_hex_mat(FILE * stream, const hex_mat *const in)
+{
   hex_mat_ok(in);
 
-  printf("%lu\n%lu\n", in->width, in->height);
+  //fprintf(stream, "%lu\n%lu\n", in->width, in->height);
 
   for (size_t y_index=0; y_index<in->height; y_index++) {  
     size_t x_index;
     for (x_index=0; x_index<in->width-1; x_index++) {
-      printf("%u ", in->matrix[x_index][y_index]);
+      fprintf(stream, "%u ", in->matrix[x_index][y_index]);
     }
-    printf("%u\n", in->matrix[x_index][y_index]);
+    fprintf(stream, "%u\n", in->matrix[x_index][y_index]);
   }
 }

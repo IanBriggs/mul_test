@@ -8,8 +8,6 @@
 #include "float_utils.h"
 
 
-
-
 static void
 swap(flt *const a, flt *const b)
 {

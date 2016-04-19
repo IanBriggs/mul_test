@@ -16,7 +16,8 @@ flt_mat* malloc_flt_mat(const size_t width, const size_t height);
 flt_mat* copy_flt_mat(const flt_mat *const in);
 void free_flt_mat(flt_mat *in);
 void print_flt_mat(const flt_mat *const in);
-
+void save_flt_mat(char * filename, const flt_mat *const in);
+void fprint_flt_mat(FILE * stream, const flt_mat *const in);
 
 
 #endif

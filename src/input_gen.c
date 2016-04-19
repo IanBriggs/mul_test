@@ -8,19 +8,21 @@
 
 #include "input_gen.h"
 
+extern flt k;
+extern flt pi;
+
+flt
+sine_1d_plus_time(const flt x, const flt y)
+{
+  return sin(x + y);
+}
+
 
 flt
 sine_2d(const flt x, const flt y)
 {
-  static flt scale = NAN;
-  if (isnan(scale)) {
-    scale = rand_real_range(-1.0e20, 1.0e20);
-  }
-  return scale * sin(x + y);
+  return sin(k*pi*x) * sin(k*pi*y);
 }
-
-
-
 
 flt_mat*
 gen(const size_t width, const size_t height, 

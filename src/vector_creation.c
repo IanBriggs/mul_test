@@ -26,6 +26,7 @@ average_hex(hex* in, size_t len)
   return retval;
 }
 
+
 flt
 average_flt(flt* in, size_t len)
 {
@@ -213,14 +214,30 @@ mul_hi_lo_mat(const flt_mat *const in, const hex m,
 void
 print_flt_vectors(const flt_mat *const in)
 {
+  fprint_flt_vectors(stdout, in);
+}
+
+void
+save_flt_vectors(char * filename, const flt_mat *const in)
+{
+  FILE * fp = fopen(filename, "w");
+  assert(fp != NULL);
+  fprint_flt_vectors(fp, in);
+}
+
+
+
+void
+fprint_flt_vectors(FILE * stream, const flt_mat *const in)
+{
   flt_mat_ok(in);
 
   for (size_t x_index=0; x_index<in->width; x_index++) {
     size_t y_index;
     for (y_index=0; y_index<in->height-1; y_index++) {  
-      printf("%f ", in->matrix[x_index][y_index]);
+      fprintf(stream, "%f ", in->matrix[x_index][y_index]);
     }
-    printf("%f\n", in->matrix[x_index][y_index]);
+    fprintf(stream, "%f\n", in->matrix[x_index][y_index]);
   }
 }
 
@@ -228,16 +245,31 @@ print_flt_vectors(const flt_mat *const in)
 void
 print_hex_vectors(const hex_mat *const in)
 {
+  fprint_hex_vectors(stdout, in);
+}
+
+void
+save_hex_vectors(char * filename, const hex_mat *const in)
+{
+  FILE * fp = fopen(filename, "w");
+  assert(fp != NULL);
+  fprint_hex_vectors(fp, in);
+}
+
+void
+fprint_hex_vectors(FILE * stream, const hex_mat *const in)
+{
   hex_mat_ok(in);
 
   for (size_t x_index=0; x_index<in->width; x_index++) {
     size_t y_index;
     for (y_index=0; y_index<in->height-1; y_index++) {  
-      printf("%u ", in->matrix[x_index][y_index]);
+      fprintf(stream, "%u ", in->matrix[x_index][y_index]);
     }
-    printf("%u\n", in->matrix[x_index][y_index]);
+    fprintf(stream, "%u\n", in->matrix[x_index][y_index]);
   }
 }
+
 
 vectors*
 create_vectors(const flt_mat *const in, const hex m, const size_t H, const size_t L) 
