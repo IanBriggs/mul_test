@@ -12,6 +12,7 @@ flt pi;
 int
 main(int argc, char **argv)
 {
+<<<<<<< HEAD
   assert(argc == 5);
   size_t L = atoi(argv[1]);		// BAD PRACTICE
   size_t H = atoi(argv[2]);		// BAD PRACTICE
@@ -19,6 +20,12 @@ main(int argc, char **argv)
   k = strtod(argv[4], NULL);	        // BAD PRACTICE
 
 
+=======
+  assert(argc == 3);
+  size_t errors = atoi(argv[1]); // BAD PRACTICE
+  size_t L = 3;
+  size_t H = atoi(argv[2]);
+>>>>>>> f19e1400245f4a5ea514759e9b1c02d5439b612f
   size_t width = L*H*50;
   hex m = 214013;
   pi = 3.14159265358979323846264338327950288; // For some reason this is not coming in with math.h

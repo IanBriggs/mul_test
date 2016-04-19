@@ -10,13 +10,11 @@ import subprocess
 
 def parse_args():
     parser = argparse.ArgumentParser()
-#    parser.add_argument("--norm-svm-flags", nargs="*", default=list())
-#    parser.add_argument("--high-svm-flags", nargs="*", default=list())
-#    parser.add_argument("--low-svm-flags", nargs="*", default=list())
-#    parser.add_argument("--all-svm-flags", nargs="*", default=list())
     parser.add_argument("--training-sets", nargs=3, required=True)
     parser.add_argument("--testing-sets", nargs=3, required=True) # testing sets must be aligned (line 1 from all files should be from the same place of the same experiment run)
     parser.add_argument("--datafile", required=True)
+    parser.add_argument("--command-args", required=True)
+    parser.add_argument("--working-dir", required=True)    
     args = parser.parse_args()
 
     # if ((args.all_svm_flags == list()) and (args.norm_svm_flags == list() or 
@@ -37,9 +35,11 @@ def run(cmd, args):
 
 
 def run_single_detector(training_set, args, testing_set):
-    run("svm-train", args + [training_set])
-    run("svm-predict", [testing_set, training_set+".model", training_set+".predict"])
-    with open(training_set+".predict", 'r') as f:
+    model_file = path.split(training_set)[1]+".model"
+    predict_file = path.split(training_set)[1]+".predict"
+    run("svm-train", args + [training_set, model_file])
+    run("svm-predict", [testing_set, model_file, predict_file])
+    with open(predict_file, 'r') as f:
         predictions = [int(float(line)) for line in f.readlines()]
     return predictions
 
