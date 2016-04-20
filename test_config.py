@@ -13,7 +13,7 @@ def parse_args():
     parser.add_argument("--training-sets", nargs=3, required=True)
     parser.add_argument("--testing-sets", nargs=3, required=True) # testing sets must be aligned (line 1 from all files should be from the same place of the same experiment run)
     parser.add_argument("--datafile", required=True)
-    parser.add_argument("--command-args", required=True)
+    #    parser.add_argument("--command-args", required=True)
     parser.add_argument("--working-dir", required=True)    
     args = parser.parse_args()
 
