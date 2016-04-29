@@ -99,8 +99,8 @@ fprint_flt_mat(FILE* stream, const flt_mat *const in)
   for (size_t y_index=0; y_index<in->height; y_index++) {  
     size_t x_index;
     for (x_index=0; x_index<in->width-1; x_index++) {
-      fprintf(stream, "%f ", in->matrix[x_index][y_index]);
+      fprintf(stream, "%a ", in->matrix[x_index][y_index]);
     }
-    fprintf(stream, "%f\n", in->matrix[x_index][y_index]);
+    fprintf(stream, "%a\n", in->matrix[x_index][y_index]);
   }
 }
