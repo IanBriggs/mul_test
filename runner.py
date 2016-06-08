@@ -81,8 +81,8 @@ def generate_work_queue():
     work_queue = MP.Queue()
     for s in range(3):
         for d in range(1, 4):
-            for g in [10**p for p in range(-15, -2, 3)]:
-                for r in range(-2,3):
+            for g in [10**p for p in range(-2, 3)]:
+                for r in range(-2,3,2):
                     work_queue.put((s, d, g, r))
     
     return work_queue
