@@ -236,9 +236,9 @@ fprint_flt_vectors(FILE * stream, const flt_mat *const in, char * label)
     size_t y_index;
     fprintf(stream, "%s ", label);
     for (y_index=0; y_index<in->height-1; y_index++) {  
-      fprintf(stream, "%lu:%a ", y_index+1, in->matrix[x_index][y_index]);
+      fprintf(stream, "%lu:%f ", y_index+1, in->matrix[x_index][y_index]);
     }
-    fprintf(stream, "%a\n", in->matrix[x_index][y_index]);
+    fprintf(stream, "%f\n", in->matrix[x_index][y_index]);
   }
 }
 
